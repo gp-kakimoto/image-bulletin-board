@@ -14,6 +14,8 @@ define('DB_NAME','board');
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
 $message = array();
+//messageがsqlのデータでmessage_arrayでそれを配列として持つ
+$message_array = array();
 $error_message = array();
 $current_date = null;
 
@@ -96,7 +98,7 @@ function makeThumb ($originalFile, $thumbSize)
 
 
 function h($s) {
-    return htmlspecialchars($s, ent_QUOTES, 'UTF-8');
+    return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
   }
 
 
@@ -165,7 +167,7 @@ if( !empty($_POST['submit'])){
         }catch (Exception $e){
             //エラーが発生した時はロールバック
             $pdo->rollBack();
-            var_dump($pdo);
+            //var_dump($pdo);
         }
 
         if( $res ){
@@ -192,8 +194,17 @@ if( !empty($_POST['submit'])){
     }
 }    
 
-    //プリペアドステートメントを削除
-    //$stmt = null;
+
+//$_POST['submit']が空でなおかつ$error_messageが空のときに実行されるはず
+if( empty($error_message) ) {
+
+    // メッセージのデータを取得する
+    $sql = "SELECT view_name,message,post_date,image FROM message ORDER BY post_date DESC";
+
+//SQLに変数を利用していないので、pdo->query で実行している
+    $message_array = $pdo->query($sql);
+   // var_dump($message_array);
+}
     //データベース接続を閉じる
     $pdo = null;
 
@@ -209,26 +220,48 @@ if( !empty($_POST['submit'])){
 </head>
 <body>
     <header>
-    <h1>ひと言掲示板</h1>
-</header>
+        <h1>ひと言掲示板</h1>
+    </header>
     <div class=wrapper>
-    <div class=inner_wrapper>
-       <form action="" method="post" enctype="multipart/form-data">
-        <div class="view_name_wrapper">
-          <label for="view_name">表示名</label><br>
-          <input id="view_name" type="text" name="view_name" value= "<?php if( !empty($_SESSION['view_name']) ){ echo htmlspecialchars( $_SESSION['view_name'], ENT_QUOTES, 'UTF-8'); } ?>">
+        <div class=inner_wrapper>
+            <form action="" method="post" enctype="multipart/form-data">
+                <div class="view_name_wrapper">
+                    <label for="view_name">表示名</label><br>
+                    <input id="view_name" type="text" name="view_name" value= "<?php if( !empty($_SESSION['view_name']) ){ echo h($_SESSION['view_name']);} ?>">
+                </div>
+                <div class="one_phrase_wrapper">
+                    <label for="message">ひと言メッセージ</label><br>
+                    <textarea id="message" name="message"><?php if( !empty($message)){ echo h($message);} ?></textarea>
+                </div>
+                <div>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="">
+                    <input type="file" id ="image" name="image"><br>
+                    <input type="submit" name="submit" value="書き込む">
+                </div>
+            </form> 
         </div>
-        <div class="one_phrase_wrapper">
-          <label for="message">ひと言メッセージ</label><br>
-          <textarea id="message" name="message"></textarea>
-        </div>
-        <div>
-           <input type="hidden" name="MAX_FILE_SIZE" value="">
-           <input type="file" id ="image" name="image"><br>
-           <input type="submit" name="submit" value="書き込む">
-        </div>
-       </form> 
     </div>
-</div>
+    <hr>
+    <section>
+    <!-- ここに投稿されたメッセージを表示 -->
+        <?php
+            //message_arrayが空(null)でないとき以下のコードが実行される
+        if(!empty($message_array)){
+            //message_arrayの各要素に対して、以下のコードを実行する
+            foreach($message_array as $value){?>
+
+                <article>
+                    <div class="information">
+                        <h2><?php echo h($value['view_name']); ?></h2>
+                        <time><?php echo date('Y年m月d日H:i',strtotime($value['post_date'])); ?></time>
+                    </div>
+                    <p><?php echo nl2br(h($value['message'])); ?></p>
+                </article>
+                <?php
+            }
+        }
+    ?>
+</section>
+
 </body>
 </html>

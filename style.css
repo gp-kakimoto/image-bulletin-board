@@ -49,3 +49,12 @@ li {
 .one_phrase_wrapper{
   margin-bottom:25px;
 }
+
+.information{
+  display:flex;
+  justify-content: space-between;
+  width:500px;
+  margin-left:auto;
+  margin-right:auto;
+  background-color: blueviolet;
+}
