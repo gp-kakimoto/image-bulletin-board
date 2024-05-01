@@ -256,6 +256,8 @@ if( empty($error_message) ) {
                         <time><?php echo date('Y年m月d日H:i',strtotime($value['post_date'])); ?></time>
                     </div>
                     <p><?php echo nl2br(h($value['message'])); ?></p>
+                    <a href=""><img src="<?php if($value['image']!=null){ echo h((THUMSNAIL_DIR).$value['post_date'].'_'.$value['image']);}  ?>"></a>
+                    <?php var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); ?>
                 </article>
                 <?php
             }
