@@ -2,10 +2,12 @@
 define('THUMBNAIL_WIDTH', 400);
 define('IMAGES_DIR', __DIR__ . '/images/');
 define('THUMSNAIL_DIR', __DIR__ . '/thumbs/');
-define('THUMSNAIL_PATH', '/image_bulletin_board/thumbs/');
+define('THUMSNAIL_PATH', 'thumbs/');
 define('IMAGES_PATH', '/image_bulletin_board/images/');
 define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
+//管理ページのログインパスワード
+define('PASSWORD','adminPassword');
 
 //データベースの接続情報
 define('DB_HOST','localhost');
@@ -107,6 +109,10 @@ function h($s) {
 
 session_start();
 
+if( !empty($_GET['btn_logout'])){
+    unset($_SESSION['admin_login']);
+}
+
 // データベースに接続
 try{
     $option = array(
@@ -121,6 +127,15 @@ try{
     $error_message[] = $e->getMessage();
 
     var_dump("接続エラー\n".$error_message);
+}
+
+if (!empty($_POST['btn_submit'])){
+    //var_dump($_POST);
+    if(!empty($_POST['admin_password']) && $_POST['admin_password']===PASSWORD){
+        $_SESSION['admin_login'] = true;
+    } else {
+        $error_message[] = 'ログインに失敗しました。';
+    }
 }
 
 if( !empty($_POST['submit'])){
@@ -221,57 +236,57 @@ if( empty($error_message) ) {
     <link href="./style.css" rel="stylesheet">
     <title>Document</title>
 </head>
-<body>
-    <header>
-        <img src="./img/logo.JPG">
-        <h1>ひと言掲示板</h1>
-    </header>
-    <div class=wrapper>
-        <div class=inner_wrapper>
-            <form action="" method="post" enctype="multipart/form-data">
-                <div class="view_name_wrapper">
-                    <label for="view_name">表示名</label><br>
-                    <input id="view_name" type="text" name="view_name" value= "<?php if( !empty($_SESSION['view_name']) ){ echo h($_SESSION['view_name']);} ?>">
-                </div>
-                <div class="one_phrase_wrapper">
-                    <label for="message">ひと言メッセージ</label><br>
-                    <textarea id="message" name="message"><?php if( !empty($message)){ echo h($message);} ?></textarea>
-                </div>
-                <div>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="">
-                    <input type="file" id ="image" name="image"><br>
-                    <input type="submit" name="submit" value="書き込む">
-                </div>
-            </form> 
-        </div>
-    </div>
-    <hr class="hr">
-    <section>
-    <!-- ここに投稿されたメッセージを表示 -->
-        <?php
-            //message_arrayが空(null)でないとき以下のコードが実行される
-        if(!empty($message_array)){
-            //message_arrayの各要素に対して、以下のコードを実行する
-            foreach($message_array as $value){?>
+<body class="admin_body">
+    <?php if( !empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true ){ ?>
+        <header>
+            <img src="./img/logo.JPG">
+            <h1>ひと言掲示板</h1>
+        </header>
+        <hr class="hr">
+        <section>
+        <!-- ここに投稿されたメッセージを表示 -->
+            <?php
+                //message_arrayが空(null)でないとき以下のコードが実行される
+            if(!empty($message_array)){
+                //message_arrayの各要素に対して、以下のコードを実行する
+                foreach($message_array as $value){?>
 
-                <article>
-                    <div class="information">
-                        <h2><?php echo h($value['view_name']); ?></h2>
-                        <time><?php echo date('Y年m月d日H:i',strtotime($value['post_date'])); ?></time>
-                    </div>
-                    <div class="message_wrapper">
-                        <p class="message"><?php echo nl2br(h($value['message'])); ?></p>
-                        <div class="thumbnail_viewer">
-                            <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMSNAIL_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
+                    <article>
+                        <div class="information">
+                            <h2><?php echo h($value['view_name']); ?></h2>
+                            <time><?php echo date('Y年m月d日H:i',strtotime($value['post_date'])); ?></time>
                         </div>
-                    <?php //var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); 
-                    ?> 
+                        <div class="message_wrapper">
+                            <p class="message"><?php echo nl2br(h($value['message'])); ?></p>
+                            <div class="thumbnail_viewer">
+                                <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){ $path_parts = $_SERVER["REQUEST_URI"]; echo h($path_parts.THUMSNAIL_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
+                            </div>
+                        <?php //var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); 
+                        ?> 
                     </div>
                 </article>
                 <?php
+                }
             }
         }
-    ?>
+    else{ ?>
+<header class="header_admin">
+    <img src="./img/logo.JPG">
+    <h1>ひと言掲示板</h1>
+    <button class="home_button" onclick="location.href='./index.php'">HOME</button>
+    <button class="admin_button" onclick="location.href='./admin.php'">ADMIN</button>
+</header>
+<form method="post" class="login_form">
+        <div>
+            <label for="admin_password">ログインパスワード</label>
+            <input id="admin_password" type="password" name="admin_password" value="">
+        </div>
+        <input type="submit" name="btn_submit" value="ログイン">    
+    </form>
+<section>
+<?php }?>
+
+
 </section>
 
 </body>
