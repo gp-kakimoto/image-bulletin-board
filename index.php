@@ -2,7 +2,10 @@
 define('THUMBNAIL_WIDTH', 400);
 define('IMAGES_DIR', __DIR__ . '/images/');
 define('THUMSNAIL_DIR', __DIR__ . '/thumbs/');
-ini_set('display_errors', 15);
+define('THUMSNAIL_PATH', 'thumbs/');
+define('IMAGES_PATH', '/image_bulletin_board/images/');
+define('MAX_FILE_SIZE',  15000000);
+ini_set('display_errors', 1);
 
 //データベースの接続情報
 define('DB_HOST','localhost');
@@ -220,6 +223,7 @@ if( empty($error_message) ) {
 </head>
 <body>
     <header>
+        <img src="./img/logo.JPG">
         <h1>ひと言掲示板</h1>
     </header>
     <div class=wrapper>
@@ -241,7 +245,7 @@ if( empty($error_message) ) {
             </form> 
         </div>
     </div>
-    <hr>
+    <hr class="hr">
     <section>
     <!-- ここに投稿されたメッセージを表示 -->
         <?php
@@ -255,9 +259,14 @@ if( empty($error_message) ) {
                         <h2><?php echo h($value['view_name']); ?></h2>
                         <time><?php echo date('Y年m月d日H:i',strtotime($value['post_date'])); ?></time>
                     </div>
-                    <p><?php echo nl2br(h($value['message'])); ?></p>
-                    <a href=""><img src="<?php if($value['image']!=null){ echo h((THUMSNAIL_DIR).$value['post_date'].'_'.$value['image']);}  ?>"></a>
-                    <?php var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); ?>
+                    <div class="message_wrapper">
+                        <p class="message"><?php echo nl2br(h($value['message'])); ?></p>
+                        <div class="thumbnail_viewer">
+                            <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){ $path_parts = $_SERVER["REQUEST_URI"]; echo h($path_parts.THUMSNAIL_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
+                        </div>
+                    <?php //var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); 
+                    ?> 
+                    </div>
                 </article>
                 <?php
             }

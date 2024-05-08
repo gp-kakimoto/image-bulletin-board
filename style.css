@@ -8,14 +8,29 @@ li {
     text-align:center;
     margin-left:auto;
     margin-right:auto;
+    margin-top:50px;
+    display:flex;
   }
 
+  header img{
+    /*margin-left:1px;*/
+    margin-right:20px;
+      }
   header h1{
-    text-align:center;
-    margin-left:auto;
-    margin-right:auto;
+    /* text-align:center; */
+
+    /* margin-left:auto;
+    margin-right:auto; */
+    margin-top:15px;
   }
 
+.home_button{
+
+}
+
+.admin_button{
+  
+}
 .wrapper {
   width:700px;
 
@@ -50,11 +65,47 @@ li {
   margin-bottom:25px;
 }
 
+textarea {
+  width: 90%;
+  max-width: 90%;
+  height: 70px;
+  resize:none;
+}
+
 .information{
   display:flex;;
   justify-content: space-between;
   width:500px;
   margin-left:auto;
   margin-right:auto;
-  background-color: blueviolet;
+  background-color: rgb(241, 238, 244);
+}
+
+.message_wrapper{
+  width:500px;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:10px;
+  margin-bottom:10px;
+  padding-bottom:10px;
+  background-color: rgba(114, 142, 123, 0.168);
+}
+.thumbnail_viewer{
+  width:400px;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:15px;
+  margin-bottom:15px;
+}
+
+.message{
+  width:500px;
+  margin-left:auto;
+  margin-right:auto; 
+}
+
+.hr{
+  width:700px;
+  margin-left:auto;
+  margin-right:auto;
 }
