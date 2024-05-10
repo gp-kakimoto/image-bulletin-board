@@ -2,8 +2,8 @@
 define('THUMBNAIL_WIDTH', 400);
 define('IMAGES_DIR', __DIR__ . '/images/');
 define('THUMSNAIL_DIR', __DIR__ . '/thumbs/');
-define('THUMSNAIL_PATH', '/image_bulletin_board/thumbs/');
-define('IMAGES_PATH', '/image_bulletin_board/images/');
+define('THUMSNAIL_PATH', '/image-bulletin-board/thumbs/');
+define('IMAGES_PATH', '/image-bulletin-board/images/');
 define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
 
