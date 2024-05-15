@@ -193,7 +193,7 @@ if( empty($error_message) ) {
                             <h2><?php echo h($value['view_name']); ?></h2>
                             <time><?php echo date('Y年m月d日H:i',strtotime($value['post_date'])); ?></time>
                             <p>
-                                <?php /*<a href="edit.php?message_id=<?php echo $value['id']; ?>">編集</a> */?>
+                                <a href="/image-bulletin-board/edit.php?message_id=<?php echo $value['id'];?>">編集</a>
                                 <a href="/image-bulletin-board/delete.php?message_id=<?php echo $value['id']; ?>">削除</a>
                             </p> 
                         </div>

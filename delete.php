@@ -16,6 +16,8 @@ define('DB_NAME','board');
 define('THUMSNAIL_PATH', '/image-bulletin-board/thumbs/');
 define('IMAGES_PATH', '/image-bulletin-board/images/');
 
+define('THUMSNAIL', './thumbs/');
+define('IMAGES', './images/');
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
 
@@ -113,14 +115,17 @@ if( !empty($_GET['message_id']) && empty($_POST['message_id'])){
     //画像あれば削除する
     //var_dump($_POST['image_data_for_delete']);
     if($_POST['image_data_for_delete'] != null){
-        var_dump(THUMSNAIL_PATH.$_POST['image_data_for_delete']);
-       unlink(THUMSNAIL_PATH.$_POST['image_data_for_delete']);
-       unlink(IMAGES_PATH.$_POST['image_data_for_delete']);
+        var_dump(THUMSNAIL.$_POST['image_data_for_delete']);
+        if(is_writable(THUMSNAIL.$_POST['image_data_for_delete'])){
+            echo "We can delete this file.";
+        }
+       unlink(THUMSNAIL.$_POST['image_data_for_delete']);
+       unlink(IMAGES.$_POST['image_data_for_delete']);
     }
 
     //削除に成功したら一覧に戻る
     if( $res ){
-        header("Location: ./admin.php");
+       header("Location: ./admin.php");
        //header("Location: https://toy-poodle-four.net");
         exit;
     }
