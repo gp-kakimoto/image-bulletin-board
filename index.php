@@ -207,6 +207,8 @@ if( empty($error_message) ) {
 //SQLに変数を利用していないので、pdo->query で実行している
     $message_array = $pdo->query($sql);
    // var_dump($message_array);
+} else{
+    header('Location: ./');
 }
     //データベース接続を閉じる
     $pdo = null;

@@ -2,8 +2,8 @@
 define('THUMBNAIL_WIDTH', 400);
 define('IMAGES_DIR', __DIR__ . '/images/');
 define('THUMSNAIL_DIR', __DIR__ . '/thumbs/');
-define('THUMSNAIL_PATH', 'thumbs/');
-define('IMAGES_PATH', '/image_bulletin_board/images/');
+define('THUMSNAIL_PATH', '/image-bulletin-board/thumbs/');
+define('IMAGES_PATH', '/image-bulletin-board/images/');
 define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
 //管理ページのログインパスワード
@@ -29,76 +29,6 @@ $pdo = null;
 $stmt = null;
 $res = null;
 $option = null;
-
-function makeThumb ($originalFile, $thumbSize)
-{
-
-    var_dump($originalFile.'!!!!!!');
-    // 画像の横幅・高さ取得
-    list($originalWidth, $originalHeight) = getimagesize($originalFile);
-
-    // サムネイルの横幅指定
-    $thumbWidth = $thumbSize;
-    // サムネイルの高さ算出
-    $thumbHeight = round($originalHeight * $thumbWidth / $originalWidth );
-
-    $fileType = substr($originalFile, strrpos($originalFile, '.') + 1);
-
-    // ファイルタイプ別に作成
-    if ($fileType === "jpg" || $fileType === "jpeg"||$fileType== "JPG" || $fileType == "JPEG") {
-
-        $originalImage = imagecreatefromjpeg($originalFile);
-        $thumbImage = imagecreatetruecolor($thumbWidth, $thumbHeight);
-
-    } elseif ($fileType === "png" || $fileType == "PNG") {
-
-        $originalImage = imagecreatefrompng($originalFile);
-        $thumbImage = imagecreatetruecolor($thumbWidth, $thumbHeight);
-
-        // ※アルファチャンネル保存
-        imagealphablending($thumbImage, false);
-        imagesavealpha($thumbImage, true);
-
-    } elseif ($fileType === "gif" || $fileType == "GIF") {
-
-        $originalImage = imagecreatefromgif($originalFile);
-        $thumbImage = imagecreatetruecolor($thumbWidth, $thumbHeight);
-
-        // 透明色を定義する
-        $transparent = imagecolortransparent($originalImage);
-        imagefill($thumbImage, 0, 0, $transparent);
-        imagecolortransparent($thumbImage, $transparent);
-
-    } else { 
-
-        return '画像形式が正しくありません'; 
-
-    }
-
-    // 
-    imagecopyresampled($thumbImage, $originalImage, 0, 0, 0, 0,
-            $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
-
-    // テンポラリファイルに画像出力
-   // $tmpFile = $_FILES['image']['tmp_name'];
-    $originalFile_basename = pathinfo($originalFile,PATHINFO_BASENAME);
-    if ($fileType === "jpg" || $fileType === "jpeg"||$fileType=="JPG"||$fileType=="JPEG"){
-     //   imagejpeg($thumbImage, $tmpFile);
-    // $originalFile_basename = pathinfo($originalFile,PATHINFO_BASENAME);
-     var_dump('---------------');
-     imagejpeg($thumbImage,THUMSNAIL_DIR.$originalFile_basename);
-    } elseif ($fileType === "png"||$fileType == "PNG") {
-       // imagepng($thumbImage, $tmpFile);
-       imagepng($thumbImage,THUMSNAIL_DIR.$originalFile_basename);
-    } elseif ($fileType === "gif" || $fileType == "GIF") {
-       // imagegif($thumbImage, $tmpFile);
-       imagegif($thumbImage,THUMSNAIL_DIR.$originalFile_basename);
-    } 
-
-    // 画像破棄
-    imagedestroy($originalImage);
-    imagedestroy($thumbImage);
-}
 
 
 
@@ -198,14 +128,6 @@ if( !empty($_POST['submit'])){
       
         //var_dump($_FILES);
         //var_dump($_POST);
-        if($_FILES['image']['name'] != NULL){
-            $save_image_path = IMAGES_DIR.$current_date.'_'.$_FILES['image']['name'];
-            var_dump($save_image_path);
-            move_uploaded_file($_FILES['image']['tmp_name'], $save_image_path);
-        
-            makeThumb($save_image_path,THUMBNAIL_WIDTH);
-        }
-
         $stmt = null;
 
         header('Location: ./');
@@ -217,7 +139,7 @@ if( !empty($_POST['submit'])){
 if( empty($error_message) ) {
 
     // メッセージのデータを取得する
-    $sql = "SELECT view_name,message,post_date,image FROM message ORDER BY post_date DESC";
+    $sql = "SELECT id,view_name,message,post_date,image FROM message ORDER BY post_date DESC";
 
 //SQLに変数を利用していないので、pdo->query で実行している
     $message_array = $pdo->query($sql);
@@ -240,10 +162,25 @@ if( empty($error_message) ) {
     <?php if( !empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true ){ ?>
         <header>
             <img src="./img/logo.JPG">
-            <h1>ひと言掲示板</h1>
+            <h1>ひと言掲示板管理ページ</h1>
+            <form method="get" action="">
+                <input class="logout_button" type="submit" name="btn_logout" value="ログアウト">
+            </form>
         </header>
         <hr class="hr">
-        <section>
+        <button class="home_button" onclick="location.href='./index.php'">HOME</button>
+        <button class="admin_button" onclick="location.href='./admin.php'">ADMIN</button>
+        <hr class="hr">
+                   <section>
+                <form method="get" action="./download.php">
+                    <select name="limit" class="select_limit">
+                        <option value="">全て</option>
+                        <option value="10">10件</option>
+                        <option value="30">30件</option>
+                    </select>
+                    <input type="submit" class="btn_download" name="btn_download" value="ダウンロード">
+                </form>
+ 
         <!-- ここに投稿されたメッセージを表示 -->
             <?php
                 //message_arrayが空(null)でないとき以下のコードが実行される
@@ -255,11 +192,15 @@ if( empty($error_message) ) {
                         <div class="information">
                             <h2><?php echo h($value['view_name']); ?></h2>
                             <time><?php echo date('Y年m月d日H:i',strtotime($value['post_date'])); ?></time>
+                            <p>
+                                <?php /*<a href="edit.php?message_id=<?php echo $value['id']; ?>">編集</a> */?>
+                                <a href="/image-bulletin-board/delete.php?message_id=<?php echo $value['id']; ?>">削除</a>
+                            </p> 
                         </div>
                         <div class="message_wrapper">
                             <p class="message"><?php echo nl2br(h($value['message'])); ?></p>
                             <div class="thumbnail_viewer">
-                                <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){ $path_parts = $_SERVER["REQUEST_URI"]; echo h($path_parts.THUMSNAIL_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
+                                <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMSNAIL_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
                             </div>
                         <?php //var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); 
                         ?> 
@@ -272,22 +213,24 @@ if( empty($error_message) ) {
     else{ ?>
 <header class="header_admin">
     <img src="./img/logo.JPG">
-    <h1>ひと言掲示板</h1>
+    <h1>管理者ページ</h1>
     <button class="home_button" onclick="location.href='./index.php'">HOME</button>
     <button class="admin_button" onclick="location.href='./admin.php'">ADMIN</button>
 </header>
-<form method="post" class="login_form">
+<section>
+    <form method="post" class="login_form">
         <div>
             <label for="admin_password">ログインパスワード</label>
             <input id="admin_password" type="password" name="admin_password" value="">
         </div>
         <input type="submit" name="btn_submit" value="ログイン">    
     </form>
-<section>
 <?php }?>
-
-
 </section>
+
+
+
+
 
 </body>
 </html>
