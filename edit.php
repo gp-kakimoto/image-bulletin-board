@@ -65,7 +65,7 @@ try{
     $error_message[] = $e->getMessage();
 }
 
-if( (!empty($_GET['message_id']) && empty($_POST['message_id']))|| (empty($_GET['message_id'])&& (!empty([$data_for_update])))){
+if( (!empty($_GET['message_id']) && empty($_POST['message_id']))){
     //投稿を取得するコードが入る
     //SQL作成
     $stmt = $pdo->prepare("SELECT * FROM message WHERE id = :id");
@@ -137,9 +137,13 @@ if( (!empty($_GET['message_id']) && empty($_POST['message_id']))|| (empty($_GET[
             exit;
         }
 
-    } elseif(!empty($error_message)){
-        $message_data = $data_for_update;
-        var_dump($data_for_update);
+    } else {
+        $message_data['image']=$_POST['image_data_for_update']['image'];
+        $message_data['post_date']=$_POST['image_data_for_update']['post_date'];
+        //$message_data['post_date']=$_POST['image_data_for_update']['post_date'];
+        //$message_data = $_POST['data_for_update'];
+        var_dump($message_data['image']);
+        //var_dump($message_data);
     }
 }
 
@@ -195,7 +199,8 @@ $pdo = null;
             <input type="submit" name="btn_cancel" value="キャンセル">
             <input type="submit" name="btn_submit" value="更新">
             <input type="hidden" name="message_id" value="<?php if(!empty($message_data['id']) ){ echo $message_data['id']; } elseif( !empty($_POST['message_id'])){echo h($_POST['message_id']);} ?>">
-            <input type="hidden" name="data_for_update" value="<?php echo $message_data['id']; ?>"> 
+            <input type="hidden" name="image_data_for_update[post_date]" value="<?php echo $message_data['post_date'] ?>"> 
+            <input type="hidden" name="image_data_for_update[image]" value="<?php echo $message_data['image']; ?>"> 
         </div>
     </form>
 </section>

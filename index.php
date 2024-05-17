@@ -31,7 +31,7 @@ $option = null;
 function makeThumb ($originalFile, $thumbSize)
 {
 
-    var_dump($originalFile.'!!!!!!');
+    //var_dump($originalFile.'!!!!!!');
     // 画像の横幅・高さ取得
     list($originalWidth, $originalHeight) = getimagesize($originalFile);
 
@@ -83,7 +83,7 @@ function makeThumb ($originalFile, $thumbSize)
     if ($fileType === "jpg" || $fileType === "jpeg"||$fileType=="JPG"||$fileType=="JPEG"){
      //   imagejpeg($thumbImage, $tmpFile);
     // $originalFile_basename = pathinfo($originalFile,PATHINFO_BASENAME);
-     var_dump('---------------');
+     //var_dump('---------------');
      imagejpeg($thumbImage,THUMSNAIL_DIR.$originalFile_basename);
     } elseif ($fileType === "png"||$fileType == "PNG") {
        // imagepng($thumbImage, $tmpFile);
@@ -120,12 +120,12 @@ try{
     //接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
 
-    var_dump("接続エラー\n".$error_message);
+    //var_dump("接続エラー\n".$error_message);
 }
 
 if( !empty($_POST['submit'])){
     //$current_date = date("Y-m-d H:i:s");
-    var_dump($_POST['view_name']);
+    //var_dump($_POST['view_name']);
     $view_name = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['view_name']);
     $message = preg_replace( '/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['message']);
     if(empty($view_name)){
@@ -148,9 +148,9 @@ if( !empty($_POST['submit'])){
         //画像のアップロードの処理を調べて書く 名前とメッセージが空でないとき画像のアップロードを受け付ける？
         
         echo "<p>empty error_message</p>";
-        var_dump($_FILES);
+      //  var_dump($_FILES);
         $current_date = date("Y-m-d H:i:s");
-        var_dump($current_date);
+        //var_dump($current_date);
         //トランザクション開始
         $pdo->beginTransaction();
         try{
@@ -185,7 +185,7 @@ if( !empty($_POST['submit'])){
         //var_dump($_POST);
         if($_FILES['image']['name'] != NULL){
             $save_image_path = IMAGES_DIR.$current_date.'_'.$_FILES['image']['name'];
-            var_dump($save_image_path);
+            //var_dump($save_image_path);
             move_uploaded_file($_FILES['image']['tmp_name'], $save_image_path);
         
             makeThumb($save_image_path,THUMBNAIL_WIDTH);
@@ -207,7 +207,9 @@ if( empty($error_message) ) {
 //SQLに変数を利用していないので、pdo->query で実行している
     $message_array = $pdo->query($sql);
    // var_dump($message_array);
-} else{
+} elseif(!empty($error_message)){
+    $sql = "SELECT view_name,message,post_date,image FROM message ORDER BY post_date DESC";
+    $message_array = $pdo->query($sql);
    // header('Location: ./');
 }
     //データベース接続を閉じる
@@ -251,7 +253,7 @@ if( empty($error_message) ) {
                 <div>
                     <input type="hidden" name="MAX_FILE_SIZE" value="">
                     <input type="file" id ="image" name="image"><br>
-                    <input type="submit" name="submit" value="書き込む">
+                    <input type="submit" name="submit" value="書き込む"> 
                 </div>
             </form> 
         </div>
