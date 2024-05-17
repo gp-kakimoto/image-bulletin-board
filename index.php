@@ -208,7 +208,7 @@ if( empty($error_message) ) {
     $message_array = $pdo->query($sql);
    // var_dump($message_array);
 } else{
-    header('Location: ./');
+   // header('Location: ./');
 }
     //データベース接続を閉じる
     $pdo = null;
@@ -228,6 +228,15 @@ if( empty($error_message) ) {
         <img src="./img/logo.JPG">
         <h1>ひと言掲示板</h1>
     </header>
+
+<?php if(!empty($error_message)): ?>
+    <ul class="error_message">
+        <?php foreach($error_message as $value):?>
+            <li><?php echo $value; ?></li>
+            <?php endforeach; ?>
+    </ul>
+ <?php endif; ?>
+
     <div class=wrapper>
         <div class=inner_wrapper>
             <form action="" method="post" enctype="multipart/form-data">

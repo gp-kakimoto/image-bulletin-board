@@ -68,6 +68,16 @@ header img{
   padding-bottom:5px; */
   margin-left:20px;
 }
+
+.error_message {
+  margin-bottom: 20px;
+  padding: 10px;
+  color: #ef072d;
+  list-style-type: none;
+  border-radius: 10px;
+  border: 1px solid #ff5f79;
+}
+
 .wrapper {
   width:700px;
 
