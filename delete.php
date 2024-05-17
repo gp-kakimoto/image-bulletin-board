@@ -110,7 +110,7 @@ if( !empty($_GET['message_id']) && empty($_POST['message_id'])){
 
     } catch(Exception $e){
         // エラーが発生した時はロールバック
-        $pdo-rollBack();
+        $pdo->rollBack();
     }
     //画像あれば削除する
     //var_dump($_POST['image_data_for_delete']);
