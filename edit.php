@@ -4,7 +4,7 @@
 //データベースの接続情報
 define('DB_HOST','localhost');
 define('DB_USER','root');
-define('DB_PASS','');
+define('DB_PASS',apache_getenv('DB_PASSWORD'));
 define('DB_NAME','board');
 
 

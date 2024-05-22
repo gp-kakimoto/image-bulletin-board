@@ -1,3 +1,5 @@
+
+
 <?php
 define('THUMBNAIL_WIDTH', 400);
 define('IMAGES_DIR', __DIR__ . '/images/');
@@ -7,12 +9,12 @@ define('IMAGES_PATH', '/image-bulletin-board/images/');
 define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
 //管理ページのログインパスワード
-define('PASSWORD','adminPassword');
+define('PASSWORD','$2y$10$GCjAEfNUQOnjOZfe8HGk6OrdR0ESGrfpGCGmdYlOshs9UlPfN6Z6y');
 
 //データベースの接続情報
 define('DB_HOST','localhost');
 define('DB_USER','root');
-define('DB_PASS','');
+define('DB_PASS',apache_getenv('DB_PASSWORD'));
 define('DB_NAME','board');
 
 
@@ -61,7 +63,7 @@ try{
 
 if (!empty($_POST['btn_submit'])){
     //var_dump($_POST);
-    if(!empty($_POST['admin_password']) && $_POST['admin_password']===PASSWORD){
+    if(!empty($_POST['admin_password']) && password_verify($_POST['admin_password'],PASSWORD)){
         $_SESSION['admin_login'] = true;
     } else {
         $error_message[] = 'ログインに失敗しました。';
