@@ -1,8 +1,8 @@
 <?php
 define('THUMBNAIL_WIDTH', 400);
 define('IMAGES_DIR', __DIR__ . '/images/');
-define('THUMSNAIL_DIR', __DIR__ . '/thumbs/');
-define('THUMSNAIL_PATH', '/image-bulletin-board/thumbs/');
+define('THUMNAILS_DIR', __DIR__ . '/thumbs/');
+define('THUMNAILS_PATH', '/image-bulletin-board/thumbs/');
 define('IMAGES_PATH', '/image-bulletin-board/images/');
 define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
@@ -84,13 +84,13 @@ function makeThumb ($originalFile, $thumbSize)
      //   imagejpeg($thumbImage, $tmpFile);
     // $originalFile_basename = pathinfo($originalFile,PATHINFO_BASENAME);
      //var_dump('---------------');
-     imagejpeg($thumbImage,THUMSNAIL_DIR.$originalFile_basename);
+     imagejpeg($thumbImage,THUMNAILS_DIR.$originalFile_basename);
     } elseif ($fileType === "png"||$fileType == "PNG") {
        // imagepng($thumbImage, $tmpFile);
-       imagepng($thumbImage,THUMSNAIL_DIR.$originalFile_basename);
+       imagepng($thumbImage,THUMNAILS_DIR.$originalFile_basename);
     } elseif ($fileType === "gif" || $fileType == "GIF") {
        // imagegif($thumbImage, $tmpFile);
-       imagegif($thumbImage,THUMSNAIL_DIR.$originalFile_basename);
+       imagegif($thumbImage,THUMNAILS_DIR.$originalFile_basename);
     } 
 
     // 画像破棄
@@ -223,7 +223,7 @@ if( empty($error_message) ) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./reset.min.css" rel="stylesheet">
     <link href="./style.css" rel="stylesheet">
-    <title>Document</title>
+    <title>Home</title>
 </head>
 <body>
     <header>
@@ -275,9 +275,9 @@ if( empty($error_message) ) {
                     <div class="message_wrapper">
                         <p class="message"><?php echo nl2br(h($value['message'])); ?></p>
                         <div class="thumbnail_viewer">
-                            <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMSNAIL_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
+                            <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMNAILS_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
                         </div>
-                    <?php //var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); 
+                    <?php //var_dump(THUMNAILS_DIR.$value['post_date'].'_'.$value['image']); 
                     ?> 
                     </div>
                 </article>

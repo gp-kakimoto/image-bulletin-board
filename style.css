@@ -15,7 +15,6 @@ li {
 }
 header{
   width:700px;
-  /* height:50px; */
   text-align:center;
   margin-left:auto;
   margin-right:auto;
@@ -26,21 +25,13 @@ header{
 }
 
 header img{
-  /*margin-left:1px;*/
   margin-right:20px;
 }
 
-.header_admin {
-   /* margin-right:0px;*/
-    
-}
 
   header h1{
-    /* text-align:center; */
     background-color: rgba(114, 161, 123, 0.165);
-    /* margin-left:auto;
-    margin-right:auto; */
-    /* margin-top:15px; */
+    
   }
 
 .home_button{
@@ -64,8 +55,6 @@ header img{
   margin-left:10px;
 }
 .logout_button{
-  /* padding-top:5px;
-  padding-bottom:5px; */
   margin-left:20px;
 }
 
@@ -95,8 +84,6 @@ header img{
   width:500px;
   text-align:left;
   background-color: rgba(71, 70, 70, 0.4);
-  /* margin-top:50px;
-  margin-bottom:50px */;
   margin-left:auto;
   margin-right:auto;
 }
@@ -161,8 +148,6 @@ textarea {
   margin-left:auto;
   margin-right:auto;
 }
-
-
 
 article{
   width:500px;

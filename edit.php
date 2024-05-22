@@ -1,10 +1,5 @@
 <?php
-//    phpinfo();
-?>
-
-<?php
 //定数の設定
-//define ('FILENAME','./message.txt');
 
 //データベースの接続情報
 define('DB_HOST','localhost');
@@ -13,22 +8,19 @@ define('DB_PASS','');
 define('DB_NAME','board');
 
 
-define('THUMSNAIL_PATH', '/image-bulletin-board/thumbs/');
+//画像フォルダのパスを設定
+define('THUMNAILS_PATH', '/image-bulletin-board/thumbs/');
 define('IMAGES_PATH', '/image-bulletin-board/images/');
 
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
 
 //変数の初期化
-//$current_date = null;
 $view_name = null;
 $message = array();
 $message_data = null;
 //配列messageを要素として取り扱うための配列(二次元配列のイメージ)
-
 $message_array = array();
-
-//$success_message = null;
 $error_message = array();
 
 //データベースへのアクセスに使う変数たち
@@ -82,7 +74,6 @@ if( (!empty($_GET['message_id']) && empty($_POST['message_id']))){
     // 投稿データが取得できなときは管理ページに戻る
     if(empty($message_data)){
         header("Location: ./admin.php");
-        //header("Location: https://toy-poodle-four.net");
         exit;
     }
 
@@ -140,10 +131,7 @@ if( (!empty($_GET['message_id']) && empty($_POST['message_id']))){
     } else {
         $message_data['image']=$_POST['image_data_for_update']['image'];
         $message_data['post_date']=$_POST['image_data_for_update']['post_date'];
-        //$message_data['post_date']=$_POST['image_data_for_update']['post_date'];
-        //$message_data = $_POST['data_for_update'];
         var_dump($message_data['image']);
-        //var_dump($message_data);
     }
 }
 
@@ -159,51 +147,51 @@ $pdo = null;
 
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-<meta charset="utf-8">
-<title>ひと言掲示板 管理ページ (投稿の編集)</title>
-<link href="./reset.min.css" rel="stylesheet">
-<link href="./style.css" rel="stylesheet">
-</head>
-<body>
-<h1>ひと言掲示板 管理ページ (投稿の編集)</h1>
-<!-- 書き込み成功のメッセージを表示する -->
+    <head>
+        <meta charset="utf-8">
+        <title>ひと言掲示板 管理ページ (投稿の編集)</title>
+        <link href="./reset.min.css" rel="stylesheet">
+        <link href="./style.css" rel="stylesheet">
+    </head>
+    <body>
+        <h1>ひと言掲示板 管理ページ (投稿の編集)</h1>
+        <!-- 書き込み成功のメッセージを表示する -->
 
-<!---- error_messageが空でなければ以下の処理が実行される------->
-<?php if(!empty($error_message)): ?>
-    <ul class="error_message">
-        <?php foreach($error_message as $value):?>
-            <li><?php echo $value; ?></li>
-            <?php endforeach; ?>
-    </ul>
- <?php endif; ?>
+        <!---- error_messageが空でなければ以下の処理が実行される------->
+    <?php if(!empty($error_message)): ?>
+        <ul class="error_message">
+            <?php foreach($error_message as $value):?>
+                <li><?php echo $value; ?></li>
+                <?php endforeach; ?>
+        </ul>
+     <?php endif; ?>
 <!-- ここにメッセージの入力フォームを設置 -->
 
-<section>
-    <form method="post">
-        <div class="wrapper">
-            <div class ="inner_wrapper">
-                <div class="information information_delete">
-                    <label for="view_name">表示名</label>
-                    <!-- $_SESSION['view_name'] が空でなければ、サニタイズし、echo文により出力する--->
-                    <input id="view_name" type="text" name="view_name" value="<?php if( !empty($message_data['view_name']) ){ echo $message_data['view_name']; } elseif( !empty($view_name)){ echo h($view_name);} ?>">
-                </div>
-                <div class="message_wrapper">
-                    <label for="message">ひと言メッセージ</label>
-                    <textarea id="message" name="message" maxlength="100"><?php if( !empty($message_data['message']) ){ echo $message_data['message']; } elseif( !empty($message)){ echo h($message);} ?></textarea>
-                    <div class="thumbnail_viewer">
-                        <a href="<?php echo IMAGES_PATH.$message_data['post_date'].'_'.$message_data['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($message_data['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMSNAIL_PATH.$message_data['post_date'].'_'.$message_data['image']);}  ?>"></a>
+        <section>
+            <form method="post">
+                <div class="wrapper">
+                    <div class ="inner_wrapper">
+                        <div class="information information_delete">
+                            <label for="view_name">表示名</label>
+                            <!-- $_SESSION['view_name'] が空でなければ、サニタイズし、echo文により出力する--->
+                            <input id="view_name" type="text" name="view_name" value="<?php if( !empty($message_data['view_name']) ){ echo $message_data['view_name']; } elseif( !empty($view_name)){ echo h($view_name);} ?>">
+                        </div>
+                        <div class="message_wrapper">
+                            <label for="message">ひと言メッセージ</label>
+                            <textarea id="message" name="message" maxlength="100"><?php if( !empty($message_data['message']) ){ echo $message_data['message']; } elseif( !empty($message)){ echo h($message);} ?></textarea>
+                            <div class="thumbnail_viewer">
+                                <a href="<?php echo IMAGES_PATH.$message_data['post_date'].'_'.$message_data['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($message_data['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMNAILS_PATH.$message_data['post_date'].'_'.$message_data['image']);}  ?>"></a>
+                            </div>
+                         </div>
                     </div>
+                    <input type="submit" name="btn_cancel" value="キャンセル">
+                    <input type="submit" name="btn_submit" value="更新">
+                    <input type="hidden" name="message_id" value="<?php if(!empty($message_data['id']) ){ echo $message_data['id']; } elseif( !empty($_POST['message_id'])){echo h($_POST['message_id']);} ?>">
+                    <input type="hidden" name="image_data_for_update[post_date]" value="<?php echo $message_data['post_date'] ?>"> 
+                    <input type="hidden" name="image_data_for_update[image]" value="<?php echo $message_data['image']; ?>"> 
                 </div>
-            </div>
-            <input type="submit" name="btn_cancel" value="キャンセル">
-            <input type="submit" name="btn_submit" value="更新">
-            <input type="hidden" name="message_id" value="<?php if(!empty($message_data['id']) ){ echo $message_data['id']; } elseif( !empty($_POST['message_id'])){echo h($_POST['message_id']);} ?>">
-            <input type="hidden" name="image_data_for_update[post_date]" value="<?php echo $message_data['post_date'] ?>"> 
-            <input type="hidden" name="image_data_for_update[image]" value="<?php echo $message_data['image']; ?>"> 
-        </div>
-    </form>
-</section>
+            </form>
+        </section>
 
-</body>
+    </body>
 </html>

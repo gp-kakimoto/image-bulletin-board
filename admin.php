@@ -1,8 +1,8 @@
 <?php
 define('THUMBNAIL_WIDTH', 400);
 define('IMAGES_DIR', __DIR__ . '/images/');
-define('THUMSNAIL_DIR', __DIR__ . '/thumbs/');
-define('THUMSNAIL_PATH', '/image-bulletin-board/thumbs/');
+define('THUMNAILS_DIR', __DIR__ . '/thumbs/');
+define('THUMNAILS_PATH', '/image-bulletin-board/thumbs/');
 define('IMAGES_PATH', '/image-bulletin-board/images/');
 define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
@@ -151,27 +151,27 @@ if( empty($error_message) ) {
 ?>
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./reset.min.css" rel="stylesheet">
-    <link href="./style.css" rel="stylesheet">
-    <title>Document</title>
-</head>
-<body class="admin_body">
-    <?php if( !empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true ){ ?>
-        <header>
-            <img src="./img/logo.JPG">
-            <h1>ひと言掲示板管理ページ</h1>
-            <form method="get" action="">
-                <input class="logout_button" type="submit" name="btn_logout" value="ログアウト">
-            </form>
-        </header>
-        <hr class="hr">
-        <button class="home_button" onclick="location.href='./index.php'">HOME</button>
-        <button class="admin_button" onclick="location.href='./admin.php'">ADMIN</button>
-        <hr class="hr">
-                   <section>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="./reset.min.css" rel="stylesheet">
+        <link href="./style.css" rel="stylesheet">
+        <title>Admin</title>
+    </head>
+    <body class="admin_body">
+        <?php if( !empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true ){ ?>
+            <header>
+                <img src="./img/logo.JPG">
+                <h1>ひと言掲示板管理ページ</h1>
+                <form method="get" action="">
+                    <input class="logout_button" type="submit" name="btn_logout" value="ログアウト">
+                </form>
+            </header>
+            <hr class="hr">
+            <button class="home_button" onclick="location.href='./index.php'">HOME</button>
+            <button class="admin_button" onclick="location.href='./admin.php'">ADMIN</button>
+            <hr class="hr">
+            <section>
                 <form method="get" action="./download.php">
                     <select name="limit" class="select_limit">
                         <option value="">全て</option>
@@ -200,37 +200,30 @@ if( empty($error_message) ) {
                         <div class="message_wrapper">
                             <p class="message"><?php echo nl2br(h($value['message'])); ?></p>
                             <div class="thumbnail_viewer">
-                                <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMSNAIL_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
+                                <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMNAILS_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
                             </div>
-                        <?php //var_dump(THUMSNAIL_DIR.$value['post_date'].'_'.$value['image']); 
-                        ?> 
-                    </div>
-                </article>
+                        </div>
+                    </article>
                 <?php
                 }
             }
         }
     else{ ?>
-<header class="header_admin">
-    <img src="./img/logo.JPG">
-    <h1>管理者ページ</h1>
-    <button class="home_button" onclick="location.href='./index.php'">HOME</button>
-    <button class="admin_button" onclick="location.href='./admin.php'">ADMIN</button>
-</header>
-<section>
-    <form method="post" class="login_form">
-        <div>
-            <label for="admin_password">ログインパスワード</label>
-            <input id="admin_password" type="password" name="admin_password" value="">
-        </div>
-        <input type="submit" name="btn_submit" value="ログイン">    
-    </form>
-<?php }?>
-</section>
-
-
-
-
-
-</body>
+        <header>
+            <img src="./img/logo.JPG">
+            <h1>管理者ページ</h1>
+            <button class="home_button" onclick="location.href='./index.php'">HOME</button>
+            <button class="admin_button" onclick="location.href='./admin.php'">ADMIN</button>
+        </header>
+        <section>
+            <form method="post" class="login_form">
+                <div>
+                <label for="admin_password">ログインパスワード</label>
+                <input id="admin_password" type="password" name="admin_password" value="">
+            </div>
+            <input type="submit" name="btn_submit" value="ログイン">    
+        </form>
+        <?php }?>
+        </section>
+    </body>
 </html>

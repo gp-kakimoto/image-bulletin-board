@@ -1,8 +1,4 @@
 <?php
-//    phpinfo();
-?>
-
-<?php
 //定数の設定
 //define ('FILENAME','./message.txt');
 //管理ページのログインパスワード
@@ -12,9 +8,6 @@ define('DB_HOST','localhost');
 define('DB_USER','root');
 define('DB_PASS','');
 define('DB_NAME','board');
-
-// タイムゾーン設定
-//date_default_timezone_set('Asia/Tokyo');
 
 //変数の初期化
 $csv_data = null;
