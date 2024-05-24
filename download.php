@@ -4,11 +4,11 @@
 //管理ページのログインパスワード
 //define('PASSWORD','adminPassword');
 //データベースの接続情報
-define('DB_HOST','localhost');
-define('DB_USER','root');
-define('DB_PASS',apache_getenv('DB_PASSWORD'));
-define('DB_NAME','board');
 
+define('DB_HOST',apache_getenv('DB_HOSTNAME'));
+define('DB_USER',apache_getenv('DB_USERNAME'));
+define('DB_PASS',apache_getenv('DB_PASSWORD'));
+define('DB_NAME',apache_getenv('DB_NAMED'));
 //変数の初期化
 $csv_data = null;
 $sql = null;
@@ -47,7 +47,6 @@ if( !empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true ) {
         } 
         else {
             //post_dateで昇順に並び替えて、messageテーブルの一覧を取得する
-            //$sql = "SELECT * FROM message ORDER BY post_date ASC";
             $stmt = $pdo->prepare("SELECT * FROM message ORDER BY post_date ASC");
         }
 
@@ -55,7 +54,6 @@ if( !empty($_SESSION['admin_login']) && $_SESSION['admin_login'] === true ) {
         $stmt->execute();
         $message_array = $stmt->fetchAll();
 
-        //$message_array = $pdo->query($sql);
         //データベースの接続を閉じる
         $stmt = null;
         $pdo = null;

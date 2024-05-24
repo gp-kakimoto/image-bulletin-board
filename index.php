@@ -8,12 +8,10 @@ define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
 
 //データベースの接続情報
-define('DB_HOST','localhost');
-define('DB_USER','root');
+define('DB_HOST',apache_getenv('DB_HOSTNAME'));
+define('DB_USER',apache_getenv('DB_USERNAME'));
 define('DB_PASS',apache_getenv('DB_PASSWORD'));
-define('DB_NAME','board');
-
-
+define('DB_NAME',apache_getenv('DB_NAMED'));
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
 $message = array();
@@ -31,7 +29,6 @@ $option = null;
 function makeThumb ($originalFile, $thumbSize)
 {
 
-    //var_dump($originalFile.'!!!!!!');
     // 画像の横幅・高さ取得
     list($originalWidth, $originalHeight) = getimagesize($originalFile);
 
@@ -78,18 +75,12 @@ function makeThumb ($originalFile, $thumbSize)
             $thumbWidth, $thumbHeight, $originalWidth, $originalHeight);
 
     // テンポラリファイルに画像出力
-   // $tmpFile = $_FILES['image']['tmp_name'];
     $originalFile_basename = pathinfo($originalFile,PATHINFO_BASENAME);
     if ($fileType === "jpg" || $fileType === "jpeg"||$fileType=="JPG"||$fileType=="JPEG"){
-     //   imagejpeg($thumbImage, $tmpFile);
-    // $originalFile_basename = pathinfo($originalFile,PATHINFO_BASENAME);
-     //var_dump('---------------');
      imagejpeg($thumbImage,THUMNAILS_DIR.$originalFile_basename);
     } elseif ($fileType === "png"||$fileType == "PNG") {
-       // imagepng($thumbImage, $tmpFile);
        imagepng($thumbImage,THUMNAILS_DIR.$originalFile_basename);
     } elseif ($fileType === "gif" || $fileType == "GIF") {
-       // imagegif($thumbImage, $tmpFile);
        imagegif($thumbImage,THUMNAILS_DIR.$originalFile_basename);
     } 
 
@@ -113,19 +104,17 @@ try{
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
     );
-    //$pdo = new PDO('mysql:charset=UTF8;dbname=board;host=localhost', 'root', '',$option);
+
     $pdo = new PDO('mysql:charset=UTF8;dbname='.DB_NAME.';host='.DB_HOST , DB_USER, DB_PASS, $option);
 
 } catch(PDOException $e){
     //接続エラーのときエラー内容を取得する
     $error_message[] = $e->getMessage();
 
-    //var_dump("接続エラー\n".$error_message);
 }
 
 if( !empty($_POST['submit'])){
-    //$current_date = date("Y-m-d H:i:s");
-    //var_dump($_POST['view_name']);
+
     $view_name = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['view_name']);
     $message = preg_replace( '/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['message']);
     if(empty($view_name)){
@@ -148,9 +137,7 @@ if( !empty($_POST['submit'])){
         //画像のアップロードの処理を調べて書く 名前とメッセージが空でないとき画像のアップロードを受け付ける？
         
         echo "<p>empty error_message</p>";
-      //  var_dump($_FILES);
         $current_date = date("Y-m-d H:i:s");
-        //var_dump($current_date);
         //トランザクション開始
         $pdo->beginTransaction();
         try{
@@ -170,7 +157,6 @@ if( !empty($_POST['submit'])){
         }catch (Exception $e){
             //エラーが発生した時はロールバック
             $pdo->rollBack();
-            //var_dump($pdo);
         }
 
         if( $res ){
@@ -180,14 +166,9 @@ if( !empty($_POST['submit'])){
             $error_message[] = '書き込みに失敗しました。';
         }
 
-      
-        //var_dump($_FILES);
-        //var_dump($_POST);
         if($_FILES['image']['name'] != NULL){
             $save_image_path = IMAGES_DIR.$current_date.'_'.$_FILES['image']['name'];
-            //var_dump($save_image_path);
             move_uploaded_file($_FILES['image']['tmp_name'], $save_image_path);
-        
             makeThumb($save_image_path,THUMBNAIL_WIDTH);
         }
 
@@ -206,11 +187,9 @@ if( empty($error_message) ) {
 
 //SQLに変数を利用していないので、pdo->query で実行している
     $message_array = $pdo->query($sql);
-   // var_dump($message_array);
 } elseif(!empty($error_message)){
     $sql = "SELECT view_name,message,post_date,image FROM message ORDER BY post_date DESC";
     $message_array = $pdo->query($sql);
-   // header('Location: ./');
 }
     //データベース接続を閉じる
     $pdo = null;
@@ -276,9 +255,7 @@ if( empty($error_message) ) {
                         <p class="message"><?php echo nl2br(h($value['message'])); ?></p>
                         <div class="thumbnail_viewer">
                             <a href="<?php echo IMAGES_PATH.$value['post_date'].'_'.$value['image']; ?>" target="_blank" rel="noopener noreferrer"><img src="<?php if($value['image']!=null){/* $path_parts = $_SERVER["REQUEST_URI"];*/ echo h(THUMNAILS_PATH.$value['post_date'].'_'.$value['image']);}  ?>"></a>
-                        </div>
-                    <?php //var_dump(THUMNAILS_DIR.$value['post_date'].'_'.$value['image']); 
-                    ?> 
+                        </div> 
                     </div>
                 </article>
                 <?php

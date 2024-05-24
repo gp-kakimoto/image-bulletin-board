@@ -9,14 +9,14 @@ define('IMAGES_PATH', '/image-bulletin-board/images/');
 define('MAX_FILE_SIZE',  15000000);
 ini_set('display_errors', 1);
 //管理ページのログインパスワード
-define('PASSWORD','$2y$10$GCjAEfNUQOnjOZfe8HGk6OrdR0ESGrfpGCGmdYlOshs9UlPfN6Z6y');
+//define('PASSWORD','$2y$10$GCjAEfNUQOnjOZfe8HGk6OrdR0ESGrfpGCGmdYlOshs9UlPfN6Z6y');
+define('PASSWORD',apache_getenv('AD_PASSWORD'));
 
 //データベースの接続情報
-define('DB_HOST','localhost');
-define('DB_USER','root');
+define('DB_HOST',apache_getenv('DB_HOSTNAME'));
+define('DB_USER',apache_getenv('DB_USERNAME'));
 define('DB_PASS',apache_getenv('DB_PASSWORD'));
-define('DB_NAME','board');
-
+define('DB_NAME',apache_getenv('DB_NAMED'));
 
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
@@ -51,7 +51,7 @@ try{
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
     );
-    //$pdo = new PDO('mysql:charset=UTF8;dbname=board;host=localhost', 'root', '',$option);
+
     $pdo = new PDO('mysql:charset=UTF8;dbname='.DB_NAME.';host='.DB_HOST , DB_USER, DB_PASS, $option);
 
 } catch(PDOException $e){
@@ -62,8 +62,7 @@ try{
 }
 
 if (!empty($_POST['btn_submit'])){
-    //var_dump($_POST);
-    if(!empty($_POST['admin_password']) && password_verify($_POST['admin_password'],PASSWORD)){
+    if(!empty($_POST['admin_password']) && ($_POST['admin_password'] == PASSWORD)){
         $_SESSION['admin_login'] = true;
     } else {
         $error_message[] = 'ログインに失敗しました。';
@@ -71,8 +70,6 @@ if (!empty($_POST['btn_submit'])){
 }
 
 if( !empty($_POST['submit'])){
-    //$current_date = date("Y-m-d H:i:s");
-    var_dump($_POST['view_name']);
     $view_name = preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['view_name']);
     $message = preg_replace( '/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $_POST['message']);
     if(empty($view_name)){
@@ -117,7 +114,6 @@ if( !empty($_POST['submit'])){
         }catch (Exception $e){
             //エラーが発生した時はロールバック
             $pdo->rollBack();
-            //var_dump($pdo);
         }
 
         if( $res ){
@@ -128,8 +124,6 @@ if( !empty($_POST['submit'])){
         }
 
       
-        //var_dump($_FILES);
-        //var_dump($_POST);
         $stmt = null;
 
         header('Location: ./');
@@ -145,7 +139,6 @@ if( empty($error_message) ) {
 
 //SQLに変数を利用していないので、pdo->query で実行している
     $message_array = $pdo->query($sql);
-   // var_dump($message_array);
 }
     //データベース接続を閉じる
     $pdo = null;

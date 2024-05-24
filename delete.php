@@ -1,10 +1,11 @@
 <?php
 //定数の設定
 //データベースの接続情報
-define('DB_HOST','localhost');
-define('DB_USER','root');
+
+define('DB_HOST',apache_getenv('DB_HOSTNAME'));
+define('DB_USER',apache_getenv('DB_USERNAME'));
 define('DB_PASS',apache_getenv('DB_PASSWORD'));
-define('DB_NAME','board');
+define('DB_NAME',apache_getenv('DB_NAMED'));
 
 //画像を保存しているフォルダのパスを保持する定数
 define('THUMNAILS_PATH', '/image-bulletin-board/thumbs/');
@@ -22,7 +23,6 @@ $message_data = null;
 //配列messageを要素として取り扱うための配列(二次元配列のイメージ)
 $message_array = array();
 
-//$success_message = null;
 $error_message = array();
 
 //データベースへのアクセスに使う変数たち
